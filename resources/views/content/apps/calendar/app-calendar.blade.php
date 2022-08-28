@@ -21,6 +21,10 @@
 <section>
   <div class="app-calendar overflow-hidden border">
     <div class="row g-0">
+      <div class="col " id='success-alert'  style='display:none'>
+       
+        
+    </div>
       <!-- Sidebar -->
       <div class="col app-calendar-sidebar flex-grow-0 overflow-hidden d-flex flex-column" id="app-calendar-sidebar">
         <div class="sidebar-wrapper">
@@ -30,7 +34,7 @@
               data-bs-toggle="modal"
               data-bs-target="#add-new-sidebar"
             >
-              <span class="align-middle">Add Event</span>
+              <span class="align-middle">Add Meet</span>
             </button>
           </div>
           <div class="card-body pb-0">
@@ -42,44 +46,31 @@
               <label class="form-check-label" for="select-all">View All</label>
             </div>
             <div class="calendar-events-filter">
-              <div class="form-check form-check-danger mb-1">
-                <input
-                  type="checkbox"
-                  class="form-check-input input-filter"
-                  id="personal"
-                  data-value="personal"
-                  checked
-                />
-                <label class="form-check-label" for="personal">Personal</label>
-              </div>
-              <div class="form-check form-check-primary mb-1">
-                <input
-                  type="checkbox"
-                  class="form-check-input input-filter"
-                  id="business"
-                  data-value="business"
-                  checked
-                />
-                <label class="form-check-label" for="business">Business</label>
-              </div>
-              <div class="form-check form-check-warning mb-1">
-                <input type="checkbox" class="form-check-input input-filter" id="family" data-value="family" checked />
-                <label class="form-check-label" for="family">Family</label>
-              </div>
               <div class="form-check form-check-success mb-1">
                 <input
                   type="checkbox"
                   class="form-check-input input-filter"
-                  id="holiday"
-                  data-value="holiday"
+                  id="personal"
+                  data-value="Done"
                   checked
                 />
-                <label class="form-check-label" for="holiday">Holiday</label>
+                <label class="form-check-label" for="personal">Done</label>
               </div>
-              <div class="form-check form-check-info">
-                <input type="checkbox" class="form-check-input input-filter" id="etc" data-value="etc" checked />
-                <label class="form-check-label" for="etc">ETC</label>
+              <div class="form-check form-check-danger mb-1">
+                <input
+                  type="checkbox"
+                  class="form-check-input input-filter"
+                  id="business"
+                  data-value="Cancled"
+                  checked
+                />
+                <label class="form-check-label" for="business">Cancled</label>
               </div>
+              <div class="form-check form-check-warning mb-1">
+                <input type="checkbox" class="form-check-input input-filter" id="family" data-value="Reported" checked />
+                <label class="form-check-label" for="family">Reported</label>
+              </div>
+              
             </div>
           </div>
         </div>
@@ -111,60 +102,43 @@
       <div class="modal-content p-0">
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
         <div class="modal-header mb-1">
-          <h5 class="modal-title">Add Event</h5>
+          <h5 class="modal-title">Add Meet</h5>
         </div>
         <div class="modal-body flex-grow-1 pb-sm-0 pb-3">
           <form class="event-form needs-validation" data-ajax="false" novalidate>
+          <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+
             <div class="mb-1">
               <label for="title" class="form-label">Title</label>
-              <input type="text" class="form-control" id="title" name="title" placeholder="Event Title" required />
+              <input type="text" class="form-control" id="title" name="title" placeholder="Meet Title" required />
             </div>
             <div class="mb-1">
-              <label for="select-label" class="form-label">Label</label>
-              <select class="select2 select-label form-select w-100" id="select-label" name="select-label">
-                <option data-label="primary" value="Business" selected>Business</option>
-                <option data-label="danger" value="Personal">Personal</option>
-                <option data-label="warning" value="Family">Family</option>
-                <option data-label="success" value="Holiday">Holiday</option>
-                <option data-label="info" value="ETC">ETC</option>
+              <label for="select-label" class="form-label">Status</label>
+              <select class="select2 select-label form-select w-100" id="select-label" name="status">
+                <option data-label="warning" value="Reported" selected>Reported</option>
+                <option data-label="danger" value="Cancled">Cancled</option>
+                <option data-label="success" value="Done">Done</option>
               </select>
             </div>
             <div class="mb-1 position-relative">
               <label for="start-date" class="form-label">Start Date</label>
-              <input type="text" class="form-control" id="start-date" name="start-date" placeholder="Start Date" />
+              <input type="text" class="form-control" id="start-date" name="start" placeholder="Start Date" />
             </div>
-            <div class="mb-1 position-relative">
-              <label for="end-date" class="form-label">End Date</label>
-              <input type="text" class="form-control" id="end-date" name="end-date" placeholder="End Date" />
-            </div>
-            <div class="mb-1">
-              <div class="form-check form-switch">
-                <input type="checkbox" class="form-check-input allDay-switch" id="customSwitch3" />
-                <label class="form-check-label" for="customSwitch3">All Day</label>
-              </div>
-            </div>
-            <div class="mb-1">
-              <label for="event-url" class="form-label">Event URL</label>
-              <input type="url" class="form-control" id="event-url" placeholder="https://www.google.com" />
-            </div>
+
             <div class="mb-1 select2-primary">
-              <label for="event-guests" class="form-label">Add Guests</label>
-              <select class="select2 select-add-guests form-select w-100" id="event-guests" multiple>
-                <option data-avatar="1-small.png" value="Jane Foster">Jane Foster</option>
-                <option data-avatar="3-small.png" value="Donna Frank">Donna Frank</option>
-                <option data-avatar="5-small.png" value="Gabrielle Robertson">Gabrielle Robertson</option>
-                <option data-avatar="7-small.png" value="Lori Spears">Lori Spears</option>
-                <option data-avatar="9-small.png" value="Sandy Vega">Sandy Vega</option>
-                <option data-avatar="11-small.png" value="Cheryl May">Cheryl May</option>
+              <label for="event-guests" class="form-label">Add Doctor</label>
+              <select class="select2 select-add-guests form-select w-100" id="event-guests" multiple name='doctor_id'>
+                @foreach ($doctors as $doctor)
+                  <option data-avatar="{{ $doctor->full_name }}" value="{{ $doctor->id }}">{{ $doctor->full_name }}</option>
+              
+                @endforeach
+              
               </select>
             </div>
-            <div class="mb-1">
-              <label for="event-location" class="form-label">Location</label>
-              <input type="text" class="form-control" id="event-location" placeholder="Enter Location" />
-            </div>
+            
             <div class="mb-1">
               <label class="form-label">Description</label>
-              <textarea name="event-description-editor" id="event-description-editor" class="form-control"></textarea>
+              <textarea name="description" id="event-description-editor" class="form-control"></textarea>
             </div>
             <div class="mb-1 d-flex">
               <button type="submit" class="btn btn-primary add-event-btn me-1">Add</button>

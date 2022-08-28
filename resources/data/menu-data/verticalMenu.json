@@ -1,33 +1,18 @@
 {
-  "menu": [
+  "menu": [ 
     {
-      "name": "Dashboards",
-      "badge": "1",
-      "badgeClass": "badge badge-light-warning rounded-pill ms-auto me-1",
-      "icon": "home",
-      "slug": "",
-      "submenu": [
-      
-        {
-          "url": "/",
-          "name": "eCommerce",
-          "icon": "circle",
-          "slug": "dashboard-ecommerce"
-        }
-      ]
-    },
-
-    
-   
+      "url": "app/user/list",
+      "name": "Doctors",
+      "icon": "user",
+      "slug": "app-user-list"
+    }, 
     {
       "url": "app/calendar",
       "name": "Calendar",
       "icon": "calendar",
       "slug": "app-calendar"
     },
-   
 
- 
     {
       "name": "User",
       "icon": "user",

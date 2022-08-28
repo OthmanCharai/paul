@@ -11,6 +11,8 @@ return [
     "Pages" => "Des pages",
     "Charts & Maps" => "Graphiques et cartes",
     "Others" => "Autres",
+    "Doctors"=>"Doctors",
+
     "Email" => "Email",
     "Chat" => "Bavarder",
     "Todo" => "Faire",

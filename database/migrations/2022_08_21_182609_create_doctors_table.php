@@ -20,6 +20,7 @@ class CreateDoctorsTable extends Migration
             $table->text('address');
             $table->text('phone');
             $table->text('speciality');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }
@@ -31,6 +32,9 @@ class CreateDoctorsTable extends Migration
      */
     public function down()
     {
+        Schema::table('doctors',function(Blueprint $table){
+            $table->dropForeign('doctors_user_id_foreign');
+        });
         Schema::dropIfExists('doctors');
     }
 }

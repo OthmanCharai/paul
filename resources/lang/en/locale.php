@@ -58,6 +58,8 @@ return [
     "Dropdowns" => "Dropdowns",
     "List Group" => "List Group",
     "Modals" => "Modals",
+    "Doctors"=>"Doctors",
+
     "Modal Examples" => "Modal Examples",
     "Pagination" => "Pagination",
     "Navs Component" => "Navs Component",

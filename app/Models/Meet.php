@@ -11,10 +11,12 @@ class Meet extends Model
     use HasFactory;
     protected $fillable=[
         'status',
-        'date',
-        'user_id',
-        'doctor_id'
-    ];
+        'start',
+
+        'doctor_id',
+        'description',
+        'title',
+    ] ;
 
     public function users():BelongsTo{
         return $this->belongsTo(User::class);

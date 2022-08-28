@@ -13,6 +13,8 @@ return [
     "Others" => "Outras",
     "Email" => "O email",
     "Chat" => "Bate-papo",
+    "Doctors"=>"Doctors",
+
     "Todo" => "Façam",
     "Calendar" => "Calendário",
     "Ecommerce" => "Comércio eletrônico",

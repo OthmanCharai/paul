@@ -12,10 +12,20 @@ class Doctor extends Model
         'last_name',
         'phone',
         'address',
-        'speciality'
+        'speciality',
+        'user_id'
+        
     ];
+    protected $appends=['fullname'];
     
     public function meets():HasMany{
         return $this->hasMany(Meet::class);
+    }
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
+    public function getFullNameAttribute(){
+        return $this->first_name." ".$this->last_name;
     }
 }

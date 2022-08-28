@@ -16,7 +16,7 @@ class CreateMeetsTable extends Migration
     {
         Schema::create('meets', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
+            $table->timestamp('start');
             $table->enum('status',MeetStatus::getValues());
             $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('doctor_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();

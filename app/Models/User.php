@@ -44,4 +44,8 @@ class User extends Authenticatable implements MustVerifyEmail
     public function meets():HasMany{
         return $this->hasMany(Meet::class);
     }
+
+    public function doctors():HasMany{
+        return $this->hasMany(Doctor::class);
+    }
 }

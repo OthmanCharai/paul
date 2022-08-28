@@ -243,3 +243,7 @@ Route::get('lang/{locale}', [LanguageController::class, 'swap']);
 Auth::routes(['verify'=>true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::resource('doctor', App\Http\Controllers\DoctorController::class)->middleware('auth');
+Route::resource('meet',\App\Http\Controllers\MeetController::class)->middleware('auth');
+Route::get('/all',[\App\Http\Controllers\MeetController::class,'get_all_meets'])->middleware('auth');

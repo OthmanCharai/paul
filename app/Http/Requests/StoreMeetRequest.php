@@ -2,8 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\MeetStatus;
+use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
+/**
+ * @property mixed $doctor_id
+ */
 class StoreMeetRequest extends FormRequest
 {
     /**
@@ -11,9 +17,9 @@ class StoreMeetRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize():bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,10 +27,14 @@ class StoreMeetRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules():array
     {
         return [
-            //
+            'status'=>['required',new EnumValue(MeetStatus::class)],
+            'start'=>'required',
+            'doctor_id'=>'required',
+            'description'=>'required',
+            'title'=>'required',
         ];
     }
 }

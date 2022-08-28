@@ -1,14 +1,4 @@
-/**
- * App Calendar
- */
 
-/**
- * ! If both start and end dates are same Full calendar will nullify the end date value.
- * ! Full calendar will end the event on a day before at 12:00:00AM thus, event won't extend to the end date.
- * ! We are getting events from a separate file named app-calendar-events.js. You can add or remove events from there.
- **/
-
-'use-strict';
 
 // RTL Support
 var direction = 'ltr',
@@ -34,11 +24,9 @@ document.addEventListener('DOMContentLoaded', function () {
     eventToUpdate,
     sidebar = $('.event-sidebar'),
     calendarsColor = {
-      Business: 'primary',
-      Holiday: 'success',
-      Personal: 'danger',
-      Family: 'warning',
-      ETC: 'info'
+      Done: 'success',
+      Cancled: 'danger',
+      Reported: 'warning'
     },
     eventForm = $('.event-form'),
     addEventBtn = $('.add-event-btn'),
@@ -48,16 +36,13 @@ document.addEventListener('DOMContentLoaded', function () {
     eventTitle = $('#title'),
     eventLabel = $('#select-label'),
     startDate = $('#start-date'),
-    endDate = $('#end-date'),
-    eventUrl = $('#event-url'),
     eventGuests = $('#event-guests'),
-    eventLocation = $('#event-location'),
-    allDaySwitch = $('.allDay-switch'),
     selectAll = $('.select-all'),
     calEventFilter = $('.calendar-events-filter'),
     filterInput = $('.input-filter'),
     btnDeleteEvent = $('.btn-delete-event'),
     calendarEditor = $('#event-description-editor');
+
 
   // --------------------------------------------
   // On add new item, clear sidebar-right field fields
@@ -104,13 +89,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
       var $avatar =
         "<div class='d-flex flex-wrap align-items-center'>" +
-        "<div class='avatar avatar-sm my-0 me-50'>" +
+        "<div class='avatar avatar-sm my-0 me-50 bg-info'>" +
         "<span class='avatar-content'>" +
-        "<img src='" +
-        assetPath +
-        'images/avatars/' +
-        $(option.element).data('avatar') +
-        "' alt='avatar' />" +
+         $(option.element).data('avatar').slice(0,2)+
         '</span>' +
         '</div>' +
         option.text +
@@ -143,26 +124,13 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // End date picker
-  if (endDate.length) {
-    var end = endDate.flatpickr({
-      enableTime: true,
-      altFormat: 'Y-m-dTH:i:S',
-      onReady: function (selectedDates, dateStr, instance) {
-        if (instance.isMobile) {
-          $(instance.mobileInput).attr('step', null);
-        }
-      }
-    });
-  }
+
 
   // Event click function
   function eventClick(info) {
     eventToUpdate = info.event;
-    if (eventToUpdate.url) {
-      info.jsEvent.preventDefault();
-      window.open(eventToUpdate.url, '_blank');
-    }
+    console.log(eventToUpdate);
+   
 
     sidebar.modal('show');
     addEventBtn.addClass('d-none');
@@ -172,16 +140,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     eventTitle.val(eventToUpdate.title);
     start.setDate(eventToUpdate.start, true, 'Y-m-d');
-    eventToUpdate.allDay === true ? allDaySwitch.prop('checked', true) : allDaySwitch.prop('checked', false);
-    eventToUpdate.end !== null
-      ? end.setDate(eventToUpdate.end, true, 'Y-m-d')
-      : end.setDate(eventToUpdate.start, true, 'Y-m-d');
-    sidebar.find(eventLabel).val(eventToUpdate.extendedProps.calendar).trigger('change');
-    eventToUpdate.extendedProps.location !== undefined ? eventLocation.val(eventToUpdate.extendedProps.location) : null;
-    eventToUpdate.extendedProps.guests !== undefined
-      ? eventGuests.val(eventToUpdate.extendedProps.guests).trigger('change')
+    
+    sidebar.find(eventLabel).val(eventToUpdate.extendedProps.status).trigger('change');
+    eventToUpdate.extendedProps.doctor_id !== undefined
+      ? eventGuests.val(eventToUpdate.extendedProps.doctor_id).trigger('change')
       : null;
-    eventToUpdate.extendedProps.guests !== undefined
+    eventToUpdate.extendedProps.doctor_id !== undefined
       ? calendarEditor.val(eventToUpdate.extendedProps.description)
       : null;
 
@@ -234,15 +198,26 @@ document.addEventListener('DOMContentLoaded', function () {
     ); */
 
     var calendars = selectedCalendars();
-    // We are reading event object from app-calendar-events.js file directly by including that file above app-calendar file.
-    // You should make an API call, look into above commented API call for reference
-    selectedEvents = events.filter(function (event) {
-      // console.log(event.extendedProps.calendar.toLowerCase());
-      return calendars.includes(event.extendedProps.calendar.toLowerCase());
-    });
-    // if (selectedEvents.length > 0) {
-    successCallback(selectedEvents);
-    // }
+    var results='';
+
+
+    $.ajax({
+      url:"/all",
+      type:"GET",
+      success:function(result){
+        
+        // We are reading event object from app-calendar-events.js file directly by including that file above app-calendar file.
+        // You should make an API call, look into above commented API call for reference
+        selectedEvents = result.events.filter(function (event) {
+          // console.log(event.extendedProps.calendar.toLowerCase());
+          return calendars.includes(event.status);
+        });
+     
+        // if (selectedEvents.length > 0) {
+          successCallback(selectedEvents);
+        // }
+      }
+    })
   }
 
   // Calendar plugins
@@ -266,7 +241,10 @@ document.addEventListener('DOMContentLoaded', function () {
     initialDate: new Date(),
     navLinks: true, // can click day/week names to navigate views
     eventClassNames: function ({ event: calendarEvent }) {
-      const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar];
+ 
+      
+      const colorName = calendarsColor[calendarEvent._def.extendedProps.status];
+   
 
       return [
         // Background Color
@@ -281,7 +259,7 @@ document.addEventListener('DOMContentLoaded', function () {
       updateEventBtn.addClass('d-none');
       btnDeleteEvent.addClass('d-none');
       startDate.val(date);
-      endDate.val(date);
+     ;
     },
     eventClick: function (info) {
       eventClick(info);
@@ -393,28 +371,42 @@ document.addEventListener('DOMContentLoaded', function () {
   // Add new event
   $(addEventBtn).on('click', function () {
     if (eventForm.valid()) {
-      var newEvent = {
-        id: calendar.getEvents().length + 1,
-        title: eventTitle.val(),
-        start: startDate.val(),
-        end: endDate.val(),
-        startStr: startDate.val(),
-        endStr: endDate.val(),
-        display: 'block',
-        extendedProps: {
-          location: eventLocation.val(),
-          guests: eventGuests.val(),
-          calendar: eventLabel.val(),
-          description: calendarEditor.val()
+    
+      $.ajax({
+        url:"/meet",
+        type:'POST',
+        data:{
+          "_token":$('#token').val(),
+          'title':eventTitle.val(),
+          'start':startDate.val(),
+          'description':calendarEditor.val(),
+          'doctor_id':eventGuests.val(),
+          'status':eventLabel.val(),
+        },
+        success:function(result){
+         
+          var newEvent = {
+            id: calendar.getEvents().length + 1,
+            title: eventTitle.val(),
+            start: startDate.val(),
+            startStr: startDate.val(),
+            display: 'block',
+            extendedProps: {
+              guests: eventGuests.val(),
+              calendar: eventLabel.val(),
+              description: calendarEditor.val(),
+              id:result.meet[0].id
+            }
+          };
+          console.log(newEvent);
+          addEvent(newEvent);
+        
+          
+        },
+        error:function(error){
+          alert('error')
         }
-      };
-      if (eventUrl.val().length) {
-        newEvent.url = eventUrl.val();
-      }
-      if (allDaySwitch.prop('checked')) {
-        newEvent.allDay = true;
-      }
-      addEvent(newEvent);
+      })
     }
   });
 
@@ -425,31 +417,44 @@ document.addEventListener('DOMContentLoaded', function () {
         id: eventToUpdate.id,
         title: sidebar.find(eventTitle).val(),
         start: sidebar.find(startDate).val(),
-        end: sidebar.find(endDate).val(),
-        url: eventUrl.val(),
+     
         extendedProps: {
-          location: eventLocation.val(),
           guests: eventGuests.val(),
           calendar: eventLabel.val(),
           description: calendarEditor.val()
         },
         display: 'block',
-        allDay: allDaySwitch.prop('checked') ? true : false
       };
 
-      updateEvent(eventData);
-      sidebar.modal('hide');
+      $.ajax({
+        url:"/meet/"+eventToUpdate._def.publicId,
+        type:'PUT',
+        data:{
+          "_token":$('#token').val(),
+          'title':sidebar.find(eventTitle).val(),
+          'start':sidebar.find(startDate).val(),
+          'description':calendarEditor.val(),
+          'doctor_id':eventGuests.val(),
+          'status':eventLabel.val(),
+        },
+        success:function(result){
+          updateEvent(eventData);
+          sidebar.modal('hide');
+        
+        },
+        error:function(error){
+          alert('error')
+        }
+      })
+
+      
     }
   });
 
   // Reset sidebar input values
   function resetValues() {
-    endDate.val('');
-    eventUrl.val('');
     startDate.val('');
     eventTitle.val('');
-    eventLocation.val('');
-    allDaySwitch.prop('checked', false);
     eventGuests.val('').trigger('change');
     calendarEditor.val('');
   }

@@ -126,9 +126,7 @@
           </span>
         </div>
         <span class="avatar">
-          <img class="round"
-            src="{{ Auth::user() ?  asset('images/portrait/small/avatar-s-11.jpg') : asset('images/portrait/small/avatar-s-11.jpg') }}"
-            alt="avatar" height="40" width="40">
+          <span class="avatar-content"> {{Str::limit(Auth::user()->name, 2,'')  }}</span>
           <span class="avatar-status-online"></span>
         </span>
       </a>
@@ -144,19 +142,7 @@
           <i class="me-50" data-feather="settings"></i> Settings
         </a>
 
-        @if (Auth::User() )
-          <div class="dropdown-divider"></div>
-    
        
-       
-
-          <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header">
-            Switch Teams
-          </h6>
-          <div class="dropdown-divider"></div>
-        
-        @endif
         @if (Auth::check())
           <a class="dropdown-item" href="{{ route('logout') }}"
             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
