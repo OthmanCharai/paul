@@ -101,9 +101,9 @@ class MeetController extends Controller
     public function update(StoreMeetRequest $request, Meet $meet):JsonResponse
     {
         //
-        return response()->json($request);
         $meet->update($request->only('status','description','date','doctor_id','title'));
-        $request->session()->flash('status','Meeting was info was updated with success');
+        return response()->json('success ');
+
 
     }
 
@@ -116,6 +116,8 @@ class MeetController extends Controller
     public function destroy(Meet $meet)
     {
         //
+        $meet->delete();
+        return response()->json('success');
     }
 
     /**
