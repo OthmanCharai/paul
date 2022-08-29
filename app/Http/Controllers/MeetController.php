@@ -54,14 +54,10 @@ class MeetController extends Controller
     public function store(StoreMeetRequest $request):JsonResponse
     {
         //
-        $meets=[];
-        foreach ($request->doctor_id as $doctor_id){
-            $meets[] = new Meet(array_merge(['doctor_id'=>$doctor_id],$request->only('title','start','status','description')));
-        }
 
         try {
-            $meet=Auth::user()->meets()->saveMany(
-               $meets
+            $meet=Auth::user()->meets()->save(
+                new Meet($request->only('title','start','status','description','doctor_id'))
             );
             return response()->json(['meet'=>$meet,'success'=>'meet was added with success']);
         }catch (Exception $r){
@@ -72,7 +68,7 @@ class MeetController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Meet  $meet
+     * @param Meet $meet
      * @return Response
      */
     public function show(Meet $meet)
@@ -83,7 +79,7 @@ class MeetController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Meet  $meet
+     * @param Meet $meet
      * @return Response
      */
     public function edit(Meet $meet)
@@ -101,8 +97,15 @@ class MeetController extends Controller
     public function update(StoreMeetRequest $request, Meet $meet):JsonResponse
     {
         //
-        $meet->update($request->only('status','description','date','doctor_id','title'));
-        return response()->json('success ');
+        try{
+            $meet->update($request->only('status','description','date','doctor_id','title'));
+            return response()->json('success ');
+
+        }catch (\Exception $e){
+            return response()->json($e);
+
+        }
+
 
 
     }
@@ -110,14 +113,19 @@ class MeetController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Meet  $meet
-     * @return Response
+     * @param Meet $meet
+     * @return JsonResponse
      */
-    public function destroy(Meet $meet)
+    public function destroy(Meet $meet):JsonResponse
     {
         //
-        $meet->delete();
-        return response()->json('success');
+        try {
+            $meet->delete();
+            return response()->json('success');
+        }catch (\Exception $e){
+            return  response()->json('error');
+        }
+
     }
 
     /**

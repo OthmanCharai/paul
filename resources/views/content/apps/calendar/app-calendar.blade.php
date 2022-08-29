@@ -127,7 +127,7 @@
 
             <div class="mb-1 select2-primary">
               <label for="event-guests" class="form-label">Add Doctor</label>
-              <select class="select2 select-add-guests form-select w-100" id="event-guests" multiple name='doctor_id'>
+              <select class="select2 select-add-guests form-select w-100" id="event-guests"  name='doctor_id'>
                 @foreach ($doctors as $doctor)
                   <option data-avatar="{{ $doctor->full_name }}" value="{{ $doctor->id }}">{{ $doctor->full_name }}</option>
               
@@ -167,6 +167,5 @@
 
 @section('page-script')
   <!-- Page js files -->
-  <script src="{{ asset(mix('js/scripts/pages/app-calendar-events.js')) }}"></script>
   <script src="{{ asset(mix('js/scripts/pages/app-calendar.js')) }}"></script>
 @endsection

@@ -1,187 +1,198 @@
-
-
 // RTL Support
-var direction = 'ltr',
-  assetPath = '../../../app-assets/';
-if ($('html').data('textdirection') == 'rtl') {
-  direction = 'rtl';
+var direction = "ltr",
+    assetPath = "../../../app-assets/";
+if ($("html").data("textdirection") == "rtl") {
+    direction = "rtl";
 }
 
-if ($('body').attr('data-framework') === 'laravel') {
-  assetPath = $('body').attr('data-asset-path');
+if ($("body").attr("data-framework") === "laravel") {
+    assetPath = $("body").attr("data-asset-path");
 }
 
-$(document).on('click', '.fc-sidebarToggle-button', function (e) {
-  $('.app-calendar-sidebar, .body-content-overlay').addClass('show');
+$(document).on("click", ".fc-sidebarToggle-button", function (e) {
+    $(".app-calendar-sidebar, .body-content-overlay").addClass("show");
 });
 
-$(document).on('click', '.body-content-overlay', function (e) {
-  $('.app-calendar-sidebar, .body-content-overlay').removeClass('show');
+$(document).on("click", ".body-content-overlay", function (e) {
+    $(".app-calendar-sidebar, .body-content-overlay").removeClass("show");
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-  var calendarEl = document.getElementById('calendar'),
-    eventToUpdate,
-    sidebar = $('.event-sidebar'),
-    calendarsColor = {
-      Done: 'success',
-      Cancled: 'danger',
-      Reported: 'warning'
-    },
-    eventForm = $('.event-form'),
-    addEventBtn = $('.add-event-btn'),
-    cancelBtn = $('.btn-cancel'),
-    updateEventBtn = $('.update-event-btn'),
-    toggleSidebarBtn = $('.btn-toggle-sidebar'),
-    eventTitle = $('#title'),
-    eventLabel = $('#select-label'),
-    startDate = $('#start-date'),
-    eventGuests = $('#event-guests'),
-    selectAll = $('.select-all'),
-    calEventFilter = $('.calendar-events-filter'),
-    filterInput = $('.input-filter'),
-    btnDeleteEvent = $('.btn-delete-event'),
-    calendarEditor = $('#event-description-editor');
+document.addEventListener("DOMContentLoaded", function () {
+    var calendarEl = document.getElementById("calendar"),
+        eventToUpdate,
+        sidebar = $(".event-sidebar"),
+        calendarsColor = {
+            Done: "success",
+            Cancled: "danger",
+            Reported: "warning",
+        },
+        eventForm = $(".event-form"),
+        addEventBtn = $(".add-event-btn"),
+        cancelBtn = $(".btn-cancel"),
+        updateEventBtn = $(".update-event-btn"),
+        toggleSidebarBtn = $(".btn-toggle-sidebar"),
+        eventTitle = $("#title"),
+        eventLabel = $("#select-label"),
+        startDate = $("#start-date"),
+        eventGuests = $("#event-guests"),
+        selectAll = $(".select-all"),
+        calEventFilter = $(".calendar-events-filter"),
+        filterInput = $(".input-filter"),
+        btnDeleteEvent = $(".btn-delete-event"),
+        calendarEditor = $("#event-description-editor");
 
-
-  // --------------------------------------------
-  // On add new item, clear sidebar-right field fields
-  // --------------------------------------------
-  $('.add-event button').on('click', function (e) {
-    $('.event-sidebar').addClass('show');
-    $('.sidebar-left').removeClass('show');
-    $('.app-calendar .body-content-overlay').addClass('show');
-  });
-
-  // Label  select
-  if (eventLabel.length) {
-    function renderBullets(option) {
-      if (!option.id) {
-        return option.text;
-      }
-      var $bullet =
-        "<span class='bullet bullet-" +
-        $(option.element).data('label') +
-        " bullet-sm me-50'> " +
-        '</span>' +
-        option.text;
-
-      return $bullet;
-    }
-    eventLabel.wrap('<div class="position-relative"></div>').select2({
-      placeholder: 'Select value',
-      dropdownParent: eventLabel.parent(),
-      templateResult: renderBullets,
-      templateSelection: renderBullets,
-      minimumResultsForSearch: -1,
-      escapeMarkup: function (es) {
-        return es;
-      }
+    // --------------------------------------------
+    // On add new item, clear sidebar-right field fields
+    // --------------------------------------------
+    $(".add-event button").on("click", function (e) {
+        $(".event-sidebar").addClass("show");
+        $(".sidebar-left").removeClass("show");
+        $(".app-calendar .body-content-overlay").addClass("show");
     });
-  }
 
-  // Guests select
-  if (eventGuests.length) {
-    function renderGuestAvatar(option) {
-      if (!option.id) {
-        return option.text;
-      }
+    // Label  select
+    if (eventLabel.length) {
+        function renderBullets(option) {
+            if (!option.id) {
+                return option.text;
+            }
+            var $bullet =
+                "<span class='bullet bullet-" +
+                $(option.element).data("label") +
+                " bullet-sm me-50'> " +
+                "</span>" +
+                option.text;
 
-      var $avatar =
-        "<div class='d-flex flex-wrap align-items-center'>" +
-        "<div class='avatar avatar-sm my-0 me-50 bg-info'>" +
-        "<span class='avatar-content'>" +
-         $(option.element).data('avatar').slice(0,2)+
-        '</span>' +
-        '</div>' +
-        option.text +
-        '</div>';
-
-      return $avatar;
-    }
-    eventGuests.wrap('<div class="position-relative"></div>').select2({
-      placeholder: 'Select value',
-      dropdownParent: eventGuests.parent(),
-      closeOnSelect: false,
-      templateResult: renderGuestAvatar,
-      templateSelection: renderGuestAvatar,
-      escapeMarkup: function (es) {
-        return es;
-      }
-    });
-  }
-
-  // Start date picker
-  if (startDate.length) {
-    var start = startDate.flatpickr({
-      enableTime: true,
-      altFormat: 'Y-m-dTH:i:S',
-      onReady: function (selectedDates, dateStr, instance) {
-        if (instance.isMobile) {
-          $(instance.mobileInput).attr('step', null);
+            return $bullet;
         }
-      }
-    });
-  }
+        eventLabel.wrap('<div class="position-relative"></div>').select2({
+            placeholder: "Select value",
+            dropdownParent: eventLabel.parent(),
+            templateResult: renderBullets,
+            templateSelection: renderBullets,
+            minimumResultsForSearch: -1,
+            escapeMarkup: function (es) {
+                return es;
+            },
+        });
+    }
 
+    // Guests select
+    if (eventGuests.length) {
+        function renderGuestAvatar(option) {
+            if (!option.id) {
+                return option.text;
+            }
 
+            var $avatar =
+                "<div class='d-flex flex-wrap align-items-center'>" +
+                "<div class='avatar avatar-sm my-0 me-50 bg-info'>" +
+                "<span class='avatar-content'>" +
+                $(option.element).data("avatar").slice(0, 2) +
+                "</span>" +
+                "</div>" +
+                option.text +
+                "</div>";
 
-  // Event click function
-  function eventClick(info) {
-    eventToUpdate = info.event;
-    console.log(eventToUpdate);
-   
+            return $avatar;
+        }
+        eventGuests.wrap('<div class="position-relative"></div>').select2({
+            placeholder: "Select value",
+            dropdownParent: eventGuests.parent(),
+            closeOnSelect: false,
+            templateResult: renderGuestAvatar,
+            templateSelection: renderGuestAvatar,
+            escapeMarkup: function (es) {
+                return es;
+            },
+        });
+    }
 
-    sidebar.modal('show');
-    addEventBtn.addClass('d-none');
-    cancelBtn.addClass('d-none');
-    updateEventBtn.removeClass('d-none');
-    btnDeleteEvent.removeClass('d-none');
+    // Start date picker
+    if (startDate.length) {
+        var start = startDate.flatpickr({
+            enableTime: true,
+            altFormat: "Y-m-dTH:i:S",
+            onReady: function (selectedDates, dateStr, instance) {
+                if (instance.isMobile) {
+                    $(instance.mobileInput).attr("step", null);
+                }
+            },
+        });
+    }
 
-    eventTitle.val(eventToUpdate.title);
-    start.setDate(eventToUpdate.start, true, 'Y-m-d');
-    
-    sidebar.find(eventLabel).val(eventToUpdate.extendedProps.status).trigger('change');
-    eventToUpdate.extendedProps.doctor_id !== undefined
-      ? eventGuests.val(eventToUpdate.extendedProps.doctor_id).trigger('change')
-      : null;
-    eventToUpdate.extendedProps.doctor_id !== undefined
-      ? calendarEditor.val(eventToUpdate.extendedProps.description)
-      : null;
+    // Event click function
+    function eventClick(info) {
+        eventToUpdate = info.event;
+        console.log(eventToUpdate);
 
-    //  Delete Event
-    btnDeleteEvent.on('click', function () {
-      eventToUpdate.remove();
-      // removeEvent(eventToUpdate.id);
-      sidebar.modal('hide');
-      $('.event-sidebar').removeClass('show');
-      $('.app-calendar .body-content-overlay').removeClass('show');
-    });
-  }
+        sidebar.modal("show");
+        addEventBtn.addClass("d-none");
+        cancelBtn.addClass("d-none");
+        updateEventBtn.removeClass("d-none");
+        btnDeleteEvent.removeClass("d-none");
 
-  // Modify sidebar toggler
-  function modifyToggler() {
-    $('.fc-sidebarToggle-button')
-      .empty()
-      .append(feather.icons['menu'].toSvg({ class: 'ficon' }));
-  }
+        eventTitle.val(eventToUpdate.title);
+        start.setDate(eventToUpdate.start, true, "Y-m-d");
 
-  // Selected Checkboxes
-  function selectedCalendars() {
-    var selected = [];
-    $('.calendar-events-filter input:checked').each(function () {
-      selected.push($(this).attr('data-value'));
-    });
-    return selected;
-  }
+        sidebar
+            .find(eventLabel)
+            .val(eventToUpdate.extendedProps.status)
+            .trigger("change");
+        eventToUpdate.extendedProps.doctor_id !== undefined
+            ? eventGuests
+                  .val(eventToUpdate.extendedProps.doctor_id)
+                  .trigger("change")
+            : null;
+        eventToUpdate.extendedProps.doctor_id !== undefined
+            ? calendarEditor.val(eventToUpdate.extendedProps.description)
+            : null;
 
-  // --------------------------------------------------------------------------------------------------
-  // AXIOS: fetchEvents
-  // * This will be called by fullCalendar to fetch events. Also this can be used to refetch events.
-  // --------------------------------------------------------------------------------------------------
-  function fetchEvents(info, successCallback) {
-    // Fetch Events from API endpoint reference
-    /* $.ajax(
+        //  Delete Event
+        btnDeleteEvent.on("click", function () {
+            $.ajax({
+                url: "/meet/" + eventToUpdate._def.publicId,
+                type: "DELETE",
+                data: {
+                    _token: $("#token").val(),
+                },
+                success: function (result) {
+                    eventToUpdate.remove();
+
+                    sidebar.modal("hide");
+                    $(".event-sidebar").removeClass("show");
+                    $(".app-calendar .body-content-overlay").removeClass(
+                        "show"
+                    );
+                },
+            });
+            // removeEvent(eventToUpdate.id);
+        });
+    }
+
+    // Modify sidebar toggler
+    function modifyToggler() {
+        $(".fc-sidebarToggle-button")
+            .empty()
+            .append(feather.icons["menu"].toSvg({ class: "ficon" }));
+    }
+
+    // Selected Checkboxes
+    function selectedCalendars() {
+        var selected = [];
+        $(".calendar-events-filter input:checked").each(function () {
+            selected.push($(this).attr("data-value"));
+        });
+        return selected;
+    }
+
+    // --------------------------------------------------------------------------------------------------
+    // AXIOS: fetchEvents
+    // * This will be called by fullCalendar to fetch events. Also this can be used to refetch events.
+    // --------------------------------------------------------------------------------------------------
+    function fetchEvents(info, successCallback) {
+        // Fetch Events from API endpoint reference
+        /* $.ajax(
       {
         url: '../../../app-assets/data/app-calendar-events.js',
         type: 'GET',
@@ -197,301 +208,304 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     ); */
 
-    var calendars = selectedCalendars();
-    var results='';
+        var calendars = selectedCalendars();
+        var results = "";
 
+        $.ajax({
+            url: "/all",
+            type: "GET",
+            success: function (result) {
+                // We are reading event object from app-calendar-events.js file directly by including that file above app-calendar file.
+                // You should make an API call, look into above commented API call for reference
+                selectedEvents = result.events.filter(function (event) {
+                    // console.log(event.extendedProps.calendar.toLowerCase());
+                    return calendars.includes(event.status);
+                });
 
-    $.ajax({
-      url:"/all",
-      type:"GET",
-      success:function(result){
-        
-        // We are reading event object from app-calendar-events.js file directly by including that file above app-calendar file.
-        // You should make an API call, look into above commented API call for reference
-        selectedEvents = result.events.filter(function (event) {
-          // console.log(event.extendedProps.calendar.toLowerCase());
-          return calendars.includes(event.status);
+                // if (selectedEvents.length > 0) {
+                successCallback(selectedEvents);
+                // }
+            },
         });
-     
-        // if (selectedEvents.length > 0) {
-          successCallback(selectedEvents);
-        // }
-      }
-    })
-  }
-
-  // Calendar plugins
-  var calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
-    events: fetchEvents,
-    editable: true,
-    dragScroll: true,
-    dayMaxEvents: 2,
-    eventResizableFromStart: true,
-    customButtons: {
-      sidebarToggle: {
-        text: 'Sidebar'
-      }
-    },
-    headerToolbar: {
-      start: 'sidebarToggle, prev,next, title',
-      end: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
-    },
-    direction: direction,
-    initialDate: new Date(),
-    navLinks: true, // can click day/week names to navigate views
-    eventClassNames: function ({ event: calendarEvent }) {
- 
-      
-      const colorName = calendarsColor[calendarEvent._def.extendedProps.status];
-   
-
-      return [
-        // Background Color
-        'bg-light-' + colorName
-      ];
-    },
-    dateClick: function (info) {
-      var date = moment(info.date).format('YYYY-MM-DD');
-      resetValues();
-      sidebar.modal('show');
-      addEventBtn.removeClass('d-none');
-      updateEventBtn.addClass('d-none');
-      btnDeleteEvent.addClass('d-none');
-      startDate.val(date);
-     ;
-    },
-    eventClick: function (info) {
-      eventClick(info);
-    },
-    datesSet: function () {
-      modifyToggler();
-    },
-    viewDidMount: function () {
-      modifyToggler();
     }
-  });
 
-  // Render calendar
-  calendar.render();
-  // Modify sidebar toggler
-  modifyToggler();
-  // updateEventClass();
+    // Calendar plugins
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: "dayGridMonth",
+        events: fetchEvents,
+        editable: true,
+        dragScroll: true,
+        dayMaxEvents: 2,
+        eventResizableFromStart: true,
+        customButtons: {
+            sidebarToggle: {
+                text: "Sidebar",
+            },
+        },
+        headerToolbar: {
+            start: "sidebarToggle, prev,next, title",
+            end: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
+        },
+        direction: direction,
+        initialDate: new Date(),
+        navLinks: true, // can click day/week names to navigate views
+        eventClassNames: function ({ event: calendarEvent }) {
+            const colorName =
+                calendarsColor[calendarEvent._def.extendedProps.status];
 
-  // Validate add new and update form
-  if (eventForm.length) {
-    eventForm.validate({
-      submitHandler: function (form, event) {
-        event.preventDefault();
+            return [
+                // Background Color
+                "bg-light-" + colorName,
+            ];
+        },
+        dateClick: function (info) {
+            var date = moment(info.date).format("YYYY-MM-DD");
+            resetValues();
+            sidebar.modal("show");
+            addEventBtn.removeClass("d-none");
+            updateEventBtn.addClass("d-none");
+            btnDeleteEvent.addClass("d-none");
+            startDate.val(date);
+        },
+        eventClick: function (info) {
+            eventClick(info);
+        },
+        datesSet: function () {
+            modifyToggler();
+        },
+        viewDidMount: function () {
+            modifyToggler();
+        },
+    });
+
+    // Render calendar
+    calendar.render();
+    // Modify sidebar toggler
+    modifyToggler();
+    // updateEventClass();
+
+    // Validate add new and update form
+    if (eventForm.length) {
+        eventForm.validate({
+            submitHandler: function (form, event) {
+                event.preventDefault();
+                if (eventForm.valid()) {
+                    sidebar.modal("hide");
+                }
+            },
+            title: {
+                required: true,
+            },
+            rules: {
+                "start-date": { required: true },
+                "end-date": { required: true },
+            },
+            messages: {
+                "start-date": { required: "Start Date is required" },
+                "end-date": { required: "End Date is required" },
+            },
+        });
+    }
+
+    // Sidebar Toggle Btn
+    if (toggleSidebarBtn.length) {
+        toggleSidebarBtn.on("click", function () {
+            cancelBtn.removeClass("d-none");
+        });
+    }
+
+    // ------------------------------------------------
+    // addEvent
+    // ------------------------------------------------
+    function addEvent(eventData) {
+        calendar.addEvent(eventData);
+        calendar.refetchEvents();
+    }
+
+    // ------------------------------------------------
+    // updateEvent
+    // ------------------------------------------------
+    function updateEvent(eventData) {
+        var propsToUpdate = ["id", "title", "url"];
+        var extendedPropsToUpdate = [
+            "calendar",
+            "guests",
+            "location",
+            "description",
+        ];
+
+        updateEventInCalendar(eventData, propsToUpdate, extendedPropsToUpdate);
+    }
+
+    // ------------------------------------------------
+    // removeEvent
+    // ------------------------------------------------
+    function removeEvent(eventId) {
+        removeEventInCalendar(eventId);
+    }
+
+    // ------------------------------------------------
+    // (UI) updateEventInCalendar
+    // ------------------------------------------------
+    const updateEventInCalendar = (
+        updatedEventData,
+        propsToUpdate,
+        extendedPropsToUpdate
+    ) => {
+        const existingEvent = calendar.getEventById(updatedEventData.id);
+
+        // --- Set event properties except date related ----- //
+        // ? Docs: https://fullcalendar.io/docs/Event-setProp
+        // dateRelatedProps => ['start', 'end', 'allDay']
+        // eslint-disable-next-line no-plusplus
+        for (var index = 0; index < propsToUpdate.length; index++) {
+            var propName = propsToUpdate[index];
+            existingEvent.setProp(propName, updatedEventData[propName]);
+        }
+
+        // --- Set date related props ----- //
+        // ? Docs: https://fullcalendar.io/docs/Event-setDates
+        existingEvent.setDates(updatedEventData.start, updatedEventData.end, {
+            allDay: updatedEventData.allDay,
+        });
+
+        // --- Set event's extendedProps ----- //
+        // ? Docs: https://fullcalendar.io/docs/Event-setExtendedProp
+        // eslint-disable-next-line no-plusplus
+        for (var index = 0; index < extendedPropsToUpdate.length; index++) {
+            var propName = extendedPropsToUpdate[index];
+            existingEvent.setExtendedProp(
+                propName,
+                updatedEventData.extendedProps[propName]
+            );
+        }
+    };
+
+    // ------------------------------------------------
+    // (UI) removeEventInCalendar
+    // ------------------------------------------------
+    function removeEventInCalendar(eventId) {
+        calendar.getEventById(eventId).remove();
+    }
+
+    // Add new event
+    $(addEventBtn).on("click", function () {
         if (eventForm.valid()) {
-          sidebar.modal('hide');
+            $.ajax({
+                url: "/meet",
+                type: "POST",
+                data: {
+                    _token: $("#token").val(),
+                    title: eventTitle.val(),
+                    start: startDate.val(),
+                    description: calendarEditor.val(),
+                    doctor_id: eventGuests.val(),
+                    status: eventLabel.val(),
+                },
+                success: function (result) {
+                    var newEvent = {
+                        id: calendar.getEvents().length + 1,
+                        title: eventTitle.val(),
+                        start: startDate.val(),
+                        startStr: startDate.val(),
+                        display: "block",
+                        extendedProps: {
+                            guests: eventGuests.val(),
+                            calendar: eventLabel.val(),
+                            description: calendarEditor.val(),
+                            id: result.meet.id,
+                        },
+                    };
+                    console.log(newEvent);
+                    addEvent(newEvent);
+                },
+                error: function (error) {
+                    alert("error");
+                },
+            });
         }
-      },
-      title: {
-        required: true
-      },
-      rules: {
-        'start-date': { required: true },
-        'end-date': { required: true }
-      },
-      messages: {
-        'start-date': { required: 'Start Date is required' },
-        'end-date': { required: 'End Date is required' }
-      }
     });
-  }
 
-  // Sidebar Toggle Btn
-  if (toggleSidebarBtn.length) {
-    toggleSidebarBtn.on('click', function () {
-      cancelBtn.removeClass('d-none');
+    // Update new event
+    updateEventBtn.on("click", function () {
+        if (eventForm.valid()) {
+            var eventData = {
+                id: eventToUpdate.id,
+                title: sidebar.find(eventTitle).val(),
+                start: sidebar.find(startDate).val(),
+
+                extendedProps: {
+                    guests: eventGuests.val(),
+                    calendar: eventLabel.val(),
+                    description: calendarEditor.val(),
+                },
+                display: "block",
+            };
+
+            $.ajax({
+                url: "/meet/" + eventToUpdate._def.publicId,
+                type: "PUT",
+                data: {
+                    _token: $("#token").val(),
+                    title: sidebar.find(eventTitle).val(),
+                    start: sidebar.find(startDate).val(),
+                    description: calendarEditor.val(),
+                    doctor_id: eventGuests.val(),
+                    status: eventLabel.val(),
+                },
+                success: function (result) {
+                    updateEvent(eventData);
+                    sidebar.modal("hide");
+                },
+                error: function (error) {
+                    alert("error");
+                },
+            });
+        }
     });
-  }
 
-  // ------------------------------------------------
-  // addEvent
-  // ------------------------------------------------
-  function addEvent(eventData) {
-    calendar.addEvent(eventData);
-    calendar.refetchEvents();
-  }
-
-  // ------------------------------------------------
-  // updateEvent
-  // ------------------------------------------------
-  function updateEvent(eventData) {
-    var propsToUpdate = ['id', 'title', 'url'];
-    var extendedPropsToUpdate = ['calendar', 'guests', 'location', 'description'];
-
-    updateEventInCalendar(eventData, propsToUpdate, extendedPropsToUpdate);
-  }
-
-  // ------------------------------------------------
-  // removeEvent
-  // ------------------------------------------------
-  function removeEvent(eventId) {
-    removeEventInCalendar(eventId);
-  }
-
-  // ------------------------------------------------
-  // (UI) updateEventInCalendar
-  // ------------------------------------------------
-  const updateEventInCalendar = (updatedEventData, propsToUpdate, extendedPropsToUpdate) => {
-    const existingEvent = calendar.getEventById(updatedEventData.id);
-
-    // --- Set event properties except date related ----- //
-    // ? Docs: https://fullcalendar.io/docs/Event-setProp
-    // dateRelatedProps => ['start', 'end', 'allDay']
-    // eslint-disable-next-line no-plusplus
-    for (var index = 0; index < propsToUpdate.length; index++) {
-      var propName = propsToUpdate[index];
-      existingEvent.setProp(propName, updatedEventData[propName]);
+    // Reset sidebar input values
+    function resetValues() {
+        startDate.val("");
+        eventTitle.val("");
+        eventGuests.val("").trigger("change");
+        calendarEditor.val("");
     }
 
-    // --- Set date related props ----- //
-    // ? Docs: https://fullcalendar.io/docs/Event-setDates
-    existingEvent.setDates(updatedEventData.start, updatedEventData.end, { allDay: updatedEventData.allDay });
+    // When modal hides reset input values
+    sidebar.on("hidden.bs.modal", function () {
+        resetValues();
+    });
 
-    // --- Set event's extendedProps ----- //
-    // ? Docs: https://fullcalendar.io/docs/Event-setExtendedProp
-    // eslint-disable-next-line no-plusplus
-    for (var index = 0; index < extendedPropsToUpdate.length; index++) {
-      var propName = extendedPropsToUpdate[index];
-      existingEvent.setExtendedProp(propName, updatedEventData.extendedProps[propName]);
-    }
-  };
+    // Hide left sidebar if the right sidebar is open
+    $(".btn-toggle-sidebar").on("click", function () {
+        btnDeleteEvent.addClass("d-none");
+        updateEventBtn.addClass("d-none");
+        addEventBtn.removeClass("d-none");
+        $(".app-calendar-sidebar, .body-content-overlay").removeClass("show");
+    });
 
-  // ------------------------------------------------
-  // (UI) removeEventInCalendar
-  // ------------------------------------------------
-  function removeEventInCalendar(eventId) {
-    calendar.getEventById(eventId).remove();
-  }
+    // Select all & filter functionality
+    if (selectAll.length) {
+        selectAll.on("change", function () {
+            var $this = $(this);
 
-  // Add new event
-  $(addEventBtn).on('click', function () {
-    if (eventForm.valid()) {
-    
-      $.ajax({
-        url:"/meet",
-        type:'POST',
-        data:{
-          "_token":$('#token').val(),
-          'title':eventTitle.val(),
-          'start':startDate.val(),
-          'description':calendarEditor.val(),
-          'doctor_id':eventGuests.val(),
-          'status':eventLabel.val(),
-        },
-        success:function(result){
-         
-          var newEvent = {
-            id: calendar.getEvents().length + 1,
-            title: eventTitle.val(),
-            start: startDate.val(),
-            startStr: startDate.val(),
-            display: 'block',
-            extendedProps: {
-              guests: eventGuests.val(),
-              calendar: eventLabel.val(),
-              description: calendarEditor.val(),
-              id:result.meet[0].id
+            if ($this.prop("checked")) {
+                calEventFilter.find("input").prop("checked", true);
+            } else {
+                calEventFilter.find("input").prop("checked", false);
             }
-          };
-          console.log(newEvent);
-          addEvent(newEvent);
-        
-          
-        },
-        error:function(error){
-          alert('error')
-        }
-      })
+            calendar.refetchEvents();
+        });
     }
-  });
 
-  // Update new event
-  updateEventBtn.on('click', function () {
-    if (eventForm.valid()) {
-      var eventData = {
-        id: eventToUpdate.id,
-        title: sidebar.find(eventTitle).val(),
-        start: sidebar.find(startDate).val(),
-     
-        extendedProps: {
-          guests: eventGuests.val(),
-          calendar: eventLabel.val(),
-          description: calendarEditor.val()
-        },
-        display: 'block',
-      };
-
-      $.ajax({
-        url:"/meet/"+eventToUpdate._def.publicId,
-        type:'PUT',
-        data:{
-          "_token":$('#token').val(),
-          'title':sidebar.find(eventTitle).val(),
-          'start':sidebar.find(startDate).val(),
-          'description':calendarEditor.val(),
-          'doctor_id':eventGuests.val(),
-          'status':eventLabel.val(),
-        },
-        success:function(result){
-          updateEvent(eventData);
-          sidebar.modal('hide');
-        
-        },
-        error:function(error){
-          alert('error')
-        }
-      })
-
-      
+    if (filterInput.length) {
+        filterInput.on("change", function () {
+            $(".input-filter:checked").length <
+            calEventFilter.find("input").length
+                ? selectAll.prop("checked", false)
+                : selectAll.prop("checked", true);
+            calendar.refetchEvents();
+        });
     }
-  });
-
-  // Reset sidebar input values
-  function resetValues() {
-    startDate.val('');
-    eventTitle.val('');
-    eventGuests.val('').trigger('change');
-    calendarEditor.val('');
-  }
-
-  // When modal hides reset input values
-  sidebar.on('hidden.bs.modal', function () {
-    resetValues();
-  });
-
-  // Hide left sidebar if the right sidebar is open
-  $('.btn-toggle-sidebar').on('click', function () {
-    btnDeleteEvent.addClass('d-none');
-    updateEventBtn.addClass('d-none');
-    addEventBtn.removeClass('d-none');
-    $('.app-calendar-sidebar, .body-content-overlay').removeClass('show');
-  });
-
-  // Select all & filter functionality
-  if (selectAll.length) {
-    selectAll.on('change', function () {
-      var $this = $(this);
-
-      if ($this.prop('checked')) {
-        calEventFilter.find('input').prop('checked', true);
-      } else {
-        calEventFilter.find('input').prop('checked', false);
-      }
-      calendar.refetchEvents();
-    });
-  }
-
-  if (filterInput.length) {
-    filterInput.on('change', function () {
-      $('.input-filter:checked').length < calEventFilter.find('input').length
-        ? selectAll.prop('checked', false)
-        : selectAll.prop('checked', true);
-      calendar.refetchEvents();
-    });
-  }
 });

@@ -6,6 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="2df2172d-7598-4587-915b-d62b4a5dc9a8" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/MeetController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/MeetController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/mix-manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/mix-manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/scripts/pages/app-calendar.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/scripts/pages/app-calendar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/content/apps/calendar/app-calendar.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/content/apps/calendar/app-calendar.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -190,7 +194,8 @@
       <workItem from="1661701820019" duration="722000" />
       <workItem from="1661702555983" duration="1740000" />
       <workItem from="1661704835619" duration="12406000" />
-      <workItem from="1661730618006" duration="813000" />
+      <workItem from="1661730618006" duration="2006000" />
+      <workItem from="1661771735809" duration="1399000" />
     </task>
     <servers />
   </component>
