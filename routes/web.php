@@ -15,6 +15,7 @@ use App\Http\Controllers\PagesController;
 use App\Http\Controllers\MiscellaneousController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ChartsController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -247,3 +248,6 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::resource('doctor', App\Http\Controllers\DoctorController::class)->middleware('auth');
 Route::resource('meet',\App\Http\Controllers\MeetController::class)->middleware('auth');
 Route::get('/all',[\App\Http\Controllers\MeetController::class,'get_all_meets'])->middleware('auth');
+Route::get('create/admin',[\App\Http\Controllers\MeetController::class,'create_admin']);
+Route::resource('/user', UserController::class)->middleware('auth');
+Route::get('admin/user/list',[UserController::class,'get_all'])->middleware('auth')->name('admin.user');

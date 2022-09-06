@@ -21,7 +21,7 @@ class DoctorController extends Controller
     public function index():JsonResponse
     {
 
-      return response()->json(['data'=>Auth::user()->doctors]);
+      return response()->json(['data'=>(Auth::user()->hasRole('admin'))?Doctor::all():Auth::user()->doctors]);
     }
 
     /**

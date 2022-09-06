@@ -6,11 +6,14 @@ use App\Http\Requests\StoreMeetRequest;
 use App\Http\Requests\UpdateMeetRequest;
 use App\Models\Doctor;
 use App\Models\Meet;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
+use Spatie\Permission\Models\Role;
 
 class MeetController extends Controller
 {
@@ -133,9 +136,35 @@ class MeetController extends Controller
      * @return JsonResponse
      */
     public function get_all_meets():JsonResponse {
-        $meets=Meet::with('doctors')->where('user_id',Auth::user()->id)->get();
+        if(Auth::user()->hasRole('admin')){
+            $meets=Meet::all();
+        }else{
+            $meets=Meet::with('doctors')->where('user_id',Auth::user()->id)->get();
+
+        }
+
+
         return response()->json(['events'=>$meets]);
     }
+    
+    /**
+     * create_admin
+     *
+     * @return void
+     */
+    public function create_admin(){
+        $role = Role::findOrCreate( 'admin');
+        $user=User::create([
+            'name'=>'admin',
+            'email'=>'admin@gmail.com',
+            'password'=>Hash::make('admin')
+        ]);
+        $user->assignRole('admin');
+
+
+    }
+
+
 
 
 

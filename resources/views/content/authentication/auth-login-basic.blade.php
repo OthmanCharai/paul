@@ -15,7 +15,7 @@
     <div class="card mb-0">
       <div class="card-body">
         <a href="#" class="brand-logo justify-content-center">
-          <img class='img-fluid mr-2'  src="{{ asset('images/logo/logo_1.png') }}" alt="{{ asset('images/logo/logo.png') }}">
+          <img class='img-fluid mr-2'  src="{{ asset('images/logo/logo_2.png') }}" alt="{{ asset('images/logo/logo.png') }}">
         </a>
 
         <form class="auth-login-form mt-2" action="{{ route('login') }}" method="POST">
