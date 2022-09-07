@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreDoctorRequest;
 use App\Http\Requests\UpdateDoctorRequest;
 use App\Models\Doctor;
+use App\Models\User;
 use Exception;
 use http\Client\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class DoctorController extends Controller
 {
@@ -21,7 +23,7 @@ class DoctorController extends Controller
     public function index():JsonResponse
     {
 
-      return response()->json(['data'=>(Auth::user()->hasRole('admin'))?Doctor::all():Auth::user()->doctors]);
+      return response()->json(['data'=>(Auth::user()->hasRole('admin'))?Doctor::with('user')->get():Auth::user()->doctors]);
     }
 
     /**
@@ -46,17 +48,18 @@ class DoctorController extends Controller
 
         if(count($doctor)==0){
             try{
-                Auth::user()->doctors()->save(new Doctor($request->only('speciality','first_name','last_name','first_name','address','phone')));
+                $user=($request->has('user_id'))?User::whereId($request->user_id)->first():Auth::user();
+                $user->doctors()->save(new Doctor($request->only('speciality','first_name','last_name','first_name','address','phone')));
 
             }catch(Exception $r){
                 dd($r);
             }
             $request->session()->flash('success','doctors info was added with success');
 
-            return redirect()->route('app-user-list');
+            return redirect()->route('doctor.list');
         }
         $request->session()->flash('error','doctor already exist');
-        return redirect()->route('app-user-list');
+        return redirect()->route('doctor.list');
         //
 
        /*  $header=[];
@@ -122,13 +125,18 @@ class DoctorController extends Controller
     {
         $chec_kdoctor=Doctor::where([['address',$request->address],['speciality',$request->speciality],['first_name',$request->first_name],['last_name',$request->last_name],['user_id','!=',Auth::user()->id]])->get();
         if(!empty($chec_kdoctor)){
-            $doctor->update($request->only('speciality','first_name','last_name','first_name','address','phone'));
+            if($request->has('user_id')){
+                $doctor->update($request->only('speciality','first_name','last_name','first_name','address','phone','user_id'));
+            }else{
+                $doctor->update($request->only('speciality','first_name','last_name','first_name','address','phone'));
+
+            }
             $request->session()->flash('success','doctors info was updated with success');
         }
         else{
             $request->session()->flash('error','doctors info already in data base');
         }
-        return redirect()->route('app-user-list');
+        return redirect()->route('doctor.list');
 
     }
 
@@ -146,4 +154,12 @@ class DoctorController extends Controller
 
         return response()->json('success');
     }
+
+    /**
+     * @return View
+     */
+    public function get_all():View{
+        $pageConfigs = ['pageHeader' => false];
+        return view('/content/apps/user/app-user-list', ['pageConfigs' => $pageConfigs,'users'=>Auth::user()->hasRole('admin')?User::all():[]]);    }
+
 }

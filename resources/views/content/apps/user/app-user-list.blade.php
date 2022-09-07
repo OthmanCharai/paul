@@ -89,6 +89,7 @@
         <div class="col-md-4 user_plan"></div>
         <div class="col-md-4 user_status"></div>
       </div>
+      <input type="hidden" @role('admin')  value="admin" @else value='none'@endrole id="admin">
     </div>
     <div class="card-datatable table-responsive pt-0">
       <table class="user-list-table table">
@@ -99,6 +100,10 @@
             <th>address</th>
             <th>phone</th>
             <th>speciality</th>
+            
+            @role('admin')
+            <th>user</th>
+            @endrole
             <th>Actions</th>
           </tr>
         </thead>
@@ -166,6 +171,19 @@
                 name="address"
               />
             </div>
+
+            @role('admin')
+                <div class="mb-1 select2-primary">
+                    <label for="event-guests" class="form-label">Add User</label>
+                    <select class="select2 select-add-guests form-select w-100" id="event-guests"  name='user_id'>
+                    @foreach ($users as $user)
+                        <option data-avatar="{{ $user->name }}" value="{{ $user->id }}"> <span class="avatart-content"></span>{{ $user->name }}</option>
+                    
+                    @endforeach
+                    
+                    </select>
+                </div>
+            @endrole
             
         
        
@@ -218,7 +236,9 @@ $(function () {
           2: { title: "Active", class: "badge-light-success" },
           3: { title: "Inactive", class: "badge-light-secondary" },
       };
-
+      let isAdmin=$("#admin").val();
+      isAdmin=(isAdmin=='admin')?true:false;
+     
   var assetPath = "../../../app-assets/",
       userView = "app-user-view-account.html";
 
@@ -239,20 +259,27 @@ $(function () {
       });
   });
 
-  // Users List datatable
-  if (dtUserTable.length) {
-      dtUserTable.DataTable({
-          ajax: "{{ route('doctor.index') }}", // JSON file to add data
-          columns: [
-              // columns according to JSON
-              { data: "" },
-              { data: "fullname" },
-              { data: "address" },
-              { data: "phone" },
-              { data: "speciality" },
-              { data: "" },
-          ],
-          columnDefs: [
+function getConditionalColumn(isAdmin){
+    var columns= [];
+    columns.push({ data: "" }) 
+    columns.push({ data: "fullname" }) 
+    columns.push({ data: "address" })
+    columns.push({ data: "phone" }) 
+    columns.push({ data: "speciality" }) 
+  if(isAdmin){
+      columns.push({ data: "user" })
+      columns.push({ data: "" })
+  }
+  else{
+    columns.push({ data: "" })
+
+  }
+  return columns;
+} 
+
+function getColumsDef(isAdmin){
+    if(isAdmin){
+        return [
               {
                   // For Responsive
                   className: "control",
@@ -370,6 +397,20 @@ $(function () {
                       );
                   },
               },
+         
+              {
+                  // User Status
+                  targets: 5,
+                  render: function (data, type, full, meta) {
+                      if (full['user']['name']) {
+                          var $status = full["user"]['name'];
+                          return (
+                              '<span class="text-nowrap">' + $status + "</span>"
+                          );
+                        
+                      }
+                  },
+              },
               {
                   // Actions
                   targets: -1,
@@ -440,7 +481,208 @@ $(function () {
                       );
                   },
               },
-          ],
+          ];
+    }
+    return [
+              {
+                  // For Responsive
+                  className: "control",
+                  orderable: false,
+                  responsivePriority: 2,
+                  targets: 0,
+                  render: function (data, type, full, meta) {
+                      return "";
+                  },
+              },
+              {
+                  // User full name and username
+                  targets: 1,
+                  responsivePriority: 4,
+                  render: function (data, type, full, meta) {
+                      var $name =
+                          full["fullname"] ;
+
+                      // For Avatar badge
+                      var stateNum = Math.floor(Math.random() * 6) + 1;
+                      var states = [
+                          "success",
+                          "danger",
+                          "warning",
+                          "info",
+                          "dark",
+                          "primary",
+                          "secondary",
+                      ];
+                      var $state = states[stateNum];
+                      var $name =
+                          full["first_name"] + " " + full["last_name"];
+                      $initials = $name.match(/\b\w/g) || [];
+                      $initials = (
+                          ($initials.shift() || "") + ($initials.pop() || "")
+                      ).toUpperCase();
+                      $output =
+                          '<span class="avatar-content">' +
+                          $initials +
+                          "</span>";
+
+                      var colorClass = true
+                          ? " bg-light-" + $state + " "
+                          : "";
+                      // Creates full output for row
+                      var $row_output =
+                          '<div class="d-flex justify-content-left align-items-center">' +
+                          '<div class="avatar-wrapper">' +
+                          '<div class="avatar ' +
+                          colorClass +
+                          ' me-1">' +
+                          $output +
+                          "</div>" +
+                          "</div>" +
+                          '<div class="d-flex flex-column">' +
+                          '<a href="' +
+                          userView +
+                          '" class="user_name text-truncate text-body"><span class="fw-bolder">' +
+                          $name +
+                          "</span></a>" +
+                          '<small class="emp_post text-muted">' +
+                          "</small>" +
+                          "</div>" +
+                          "</div>";
+                      return $row_output;
+                  },
+              },
+              {
+                  // User Role
+                  targets: 2,
+                  render: function (data, type, full, meta) {
+                      var $role = full["address"];
+                      var roleBadgeObj = {
+                          Subscriber: feather.icons["user"].toSvg({
+                              class: "font-medium-3 text-primary me-50",
+                          }),
+                          Author: feather.icons["settings"].toSvg({
+                              class: "font-medium-3 text-warning me-50",
+                          }),
+                          Maintainer: feather.icons["database"].toSvg({
+                              class: "font-medium-3 text-success me-50",
+                          }),
+                          Editor: feather.icons["edit-2"].toSvg({
+                              class: "font-medium-3 text-info me-50",
+                          }),
+                          Admin: feather.icons["slack"].toSvg({
+                              class: "font-medium-3 text-danger me-50",
+                          }),
+                      };
+                      return (
+                          "<span class='text-truncate align-middle'>" +
+                          $role +
+                          "</span>"
+                      );
+                  },
+              },
+              {
+                  targets: 3,
+                  render: function (data, type, full, meta) {
+                      var $billing = full["phone"];
+
+                      return (
+                          '<span class="text-nowrap">' + $billing + "</span>"
+                      );
+                  },
+              },
+              {
+                  // User Status
+                  targets: 4,
+                  render: function (data, type, full, meta) {
+                      var $status = full["speciality"];
+
+                      return (
+                          '<span class="text-nowrap">' + $status + "</span>"
+                      );
+                  },
+              },
+         
+             
+              {
+                  // Actions
+                  targets: -1,
+                  title: "Actions",
+                  orderable: false,
+                  render: function (data, type, full, meta) {
+                      return (
+                        
+                          '<div class="btn-group">' +
+                          '<a class="btn btn-sm dropdown-toggle hide-arrow"  data-bs-toggle="dropdown">' +
+                          feather.icons["more-vertical"].toSvg({
+                              class: "font-small-4",
+                          }) +
+                          "</a>" +
+                          '<div class="dropdown-menu dropdown-menu-end">' +
+                          '<a  data-bs-toggle="modal" data-bs-target="#modals-slide-in-update'+ full['id']+'" href="' +
+                          '" class="dropdown-item  ">' +
+                          feather.icons["file-text"].toSvg({
+                              class: "font-small-4 me-50",
+                          }) +
+                          "Update</a>" +
+                          '<button onclick="deleteRcord('+full["id"]+')" class="dropdown-item delete-record">' +
+                          feather.icons["trash-2"].toSvg({
+                              class: "font-small-4 me-50",
+                          }) +
+                          "Delete</button>"+
+                          "</div>" +
+                          "</div>" +
+                          "</div>"+
+                        '<div class="modal modal-slide-in update-user-modal fade" id="modals-slide-in-update'+ full['id']+'">'+
+                            '<div class="modal-dialog">'+
+                              '<form method="post" action="/doctor/'+full['id']+'" class="add-new-user modal-content pt-0">'+
+                                '@csrf'+
+                                '@method('PUT')'+
+                                '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>'+
+                                '<div class="modal-header mb-1">'+
+                                  '<h5 class="modal-title" id="exampleModalLabel">Add User</h5>'+
+                                '</div>'+
+                                '<div class="modal-body flex-grow-1">'+
+                                  '<div class="mb-1">'+
+                                  ' <label class="form-label" for="basic-icon-default-fullname">First Name</label>'+
+                                    '<input type="text" class="form-control dt-full-name" id="basic-icon-default-fullname" value="'+full['first_name']+ '" name="first_name"/>'+
+                                ' </div>'+
+                                ' <div class="mb-1">'+
+                                    '<label class="form-label" for="basic-icon-default-uname">Last Name</label>'+
+                                    '<input type="text" id="basic-icon-default-uname" class="form-control dt-uname" value="'+full['last_name']+'" name="last_name"/>'+
+                                    '</div>'+         
+                                  '<div class="mb-1">'+
+                                  '<label class="form-label" for="basic-icon-default-contact">Contact</label>' +             
+                                      '<input type="text"'+
+                                      'id="basic-icon-default-contact"'+
+                                      'class="form-control dt-contact"'+
+                                      'name="phone"'+
+                                      "value='"+full['phone']+"'"+
+                                    '/>'+
+                                  '</div>'+
+                                  '<div class="mb-1">'+
+                                  ' <label class="form-label" for="basic-icon-default-company">Speciality</label>'+
+                                  ' <input type="text" id="basic-icon-default-company" class="form-control dt-uname" value='+full['speciality']+' name="speciality"/>'+
+                                  '</div>'+
+                                  '<div class="mb-1">'+
+                                  '<label class="form-label" for="basic-icon-default-company">Address</label>'+
+                                    '<input type="text" id="basic-icon-default-company" class="form-control dt-uname" value='+full['address']+'" name="address"/>'+
+                                  '</div>'+            
+                                  '<button type="submit" class="btn btn-primary me-1 data-submit">Submit</button>'+
+                                ' <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>'+
+                                '</div></form></div></div>'
+                      );
+                  },
+              },
+          ]
+}
+
+  // Users List datatable
+  if (dtUserTable.length) {
+      dtUserTable.DataTable({
+          ajax: "{{ route('doctor.index') }}", // JSON file to add data
+          
+          columns: getConditionalColumn(isAdmin),
+          columnDefs:getColumsDef(isAdmin),
           order: [[1, "desc"]],
           dom:
               '<"d-flex justify-content-between align-items-center header-actions mx-2 row mt-75"' +

@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMeetRequest;
-use App\Http\Requests\UpdateMeetRequest;
+
 use App\Models\Doctor;
 use App\Models\Meet;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -29,12 +28,11 @@ class MeetController extends Controller
             'pageHeader' => false
         ];
 
-        $doctors=Auth::user()->doctors;
 
 
         return view('/content/apps/calendar/app-calendar', [
             'pageConfigs' => $pageConfigs,
-            'doctors'=>$doctors
+            'doctors'=>(Auth::user()->hasRole('admin'))?Doctor::all():Auth::user()->doctors
         ]);
     }
 
@@ -101,7 +99,7 @@ class MeetController extends Controller
     {
         //
         try{
-            $meet->update($request->only('status','description','date','doctor_id','title'));
+            $meet->update($request->only('status','description','start','doctor_id','title'));
             return response()->json('success ');
 
         }catch (\Exception $e){
@@ -146,7 +144,7 @@ class MeetController extends Controller
 
         return response()->json(['events'=>$meets]);
     }
-    
+
     /**
      * create_admin
      *
